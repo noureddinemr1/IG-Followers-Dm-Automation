@@ -628,6 +628,14 @@ Options:
   --list-targets        List all configured targets
   -i, --interactive     Run in interactive mode
   --setup               Create .env file for credentials
+  
+  # DM Automation Options
+  --dm-stats            Show DM automation statistics
+  --dm-scraped          Send DMs to scraped accounts
+  --dm-user             Send single DM to specified user
+  --dm-message          Message content for single DM
+  --dm-template         Template ID to use for DM campaign
+  --dm-campaign         Campaign ID to run
 ```
 
 ### Examples
@@ -645,6 +653,56 @@ python src/main.py --list-targets
 # Run scheduler
 python config/scheduler.py --run
 ```
+
+## 📨 DM Automation
+
+The system includes comprehensive DM automation capabilities for engaging with scraped accounts.
+
+### Features
+- **Template Management**: Create reusable message templates with variables
+- **Campaign System**: Organize targets into campaigns with tracking
+- **Rate Limiting**: Built-in safety limits to prevent spam detection
+- **Analytics**: Comprehensive statistics and success tracking
+
+### Quick Start with DM Automation
+
+```bash
+# Show DM statistics
+python src/main.py -u username -p password --dm-stats
+
+# Send DMs to scraped accounts
+python src/main.py -u username -p password --dm-scraped --dm-template intro_1
+
+# Send single DM
+python src/main.py -u username -p password --dm-user target_user --dm-message "Hello!"
+
+# Interactive DM management
+python src/main.py --interactive
+# Choose option 5: DM Automation Menu
+```
+
+### DM API Endpoints
+
+Access DM features via REST API:
+
+```bash
+# Get DM statistics
+curl http://localhost:8080/api/v1/dm/stats
+
+# Create template
+curl -X POST "http://localhost:8080/api/v1/dm/templates" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Intro", "subject": "Hello", "message": "Hi {username}!"}'
+
+# Create campaign
+curl -X POST "http://localhost:8080/api/v1/dm/campaigns" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Q4 Campaign", "template_id": "intro_1", "target_list": ["user1", "user2"]}'
+```
+
+### Safety & Compliance
+
+⚠️ **Important**: DM automation operates in simulation mode by default. Review `docs/DM_AUTOMATION.md` for detailed safety guidelines and compliance information.
 
 ## Configuration
 

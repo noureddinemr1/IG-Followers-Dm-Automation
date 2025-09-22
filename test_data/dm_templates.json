@@ -1,0 +1,43 @@
+[
+  {
+    "id": "intro_1",
+    "name": "Introduction Template 1",
+    "subject": "Hello!",
+    "message": "Hi {username}! I noticed we have similar interests. Would love to connect! 😊",
+    "variables": [
+      "username"
+    ],
+    "active": true
+  },
+  {
+    "id": "business_1",
+    "name": "Business Outreach",
+    "subject": "Collaboration Opportunity",
+    "message": "Hello {username}! I love your content about {topic}. I have a collaboration opportunity that might interest you. Would you be open to a quick chat?",
+    "variables": [
+      "username",
+      "topic"
+    ],
+    "active": true
+  },
+  {
+    "id": "follow_up",
+    "name": "Follow-up Message",
+    "subject": "Follow-up",
+    "message": "Hi {username}! Just following up on my previous message. Hope you're having a great day!",
+    "variables": [
+      "username"
+    ],
+    "active": true
+  },
+  {
+    "id": "template_1758558459",
+    "name": "Test Template",
+    "subject": "Test Subject",
+    "message": "Hello {username}! This is a test message.",
+    "variables": [
+      "username"
+    ],
+    "active": true
+  }
+]

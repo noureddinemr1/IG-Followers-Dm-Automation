@@ -194,6 +194,228 @@ List all scraping jobs.
 }
 ```
 
+### DM Automation Endpoints
+
+#### GET /api/v1/dm/stats
+Get comprehensive DM automation statistics.
+
+**Response:**
+```json
+{
+  "total_dms_sent": 145,
+  "total_dms_failed": 12,
+  "today_dms_sent": 23,
+  "daily_limit": 50,
+  "daily_remaining": 27,
+  "hourly_limit": 10,
+  "hourly_remaining": 7,
+  "blocked_users_count": 3,
+  "active_campaigns": 2,
+  "total_campaigns": 5,
+  "success_rate": 92.4
+}
+```
+
+#### POST /api/v1/dm/templates
+Create a new DM template.
+
+**Request Body:**
+```json
+{
+  "name": "Introduction Template",
+  "subject": "Hello!",
+  "message": "Hi {username}! I noticed we have similar interests. Would love to connect! 😊",
+  "variables": ["username"]
+}
+```
+
+**Response:**
+```json
+{
+  "id": "template_1234567890",
+  "name": "Introduction Template",
+  "subject": "Hello!",
+  "message": "Hi {username}! I noticed we have similar interests. Would love to connect! 😊",
+  "variables": ["username"],
+  "active": true
+}
+```
+
+#### GET /api/v1/dm/templates
+List all DM templates.
+
+**Response:**
+```json
+[
+  {
+    "id": "intro_1",
+    "name": "Introduction Template 1",
+    "subject": "Hello!",
+    "message": "Hi {username}! I noticed we have similar interests. Would love to connect! 😊",
+    "variables": ["username"],
+    "active": true
+  }
+]
+```
+
+#### POST /api/v1/dm/campaigns
+Create a new DM campaign.
+
+**Request Body:**
+```json
+{
+  "name": "Q4 Outreach Campaign",
+  "template_id": "intro_1",
+  "target_list": ["user1", "user2", "user3"],
+  "rate_limit": {
+    "messages_per_hour": 5,
+    "delay_min": 60,
+    "delay_max": 180,
+    "daily_limit": 30
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "id": "campaign_1234567890",
+  "name": "Q4 Outreach Campaign",
+  "template_id": "intro_1",
+  "status": "draft",
+  "target_count": 3,
+  "messages_sent": 0,
+  "messages_failed": 0,
+  "created_at": "2024-01-01T10:00:00Z"
+}
+```
+
+#### GET /api/v1/dm/campaigns
+List all DM campaigns.
+
+**Response:**
+```json
+[
+  {
+    "id": "campaign_1234567890",
+    "name": "Q4 Outreach Campaign",
+    "template_id": "intro_1",
+    "status": "active",
+    "target_count": 100,
+    "messages_sent": 45,
+    "messages_failed": 3,
+    "created_at": "2024-01-01T10:00:00Z"
+  }
+]
+```
+
+#### GET /api/v1/dm/campaigns/{campaign_id}/stats
+Get detailed statistics for a specific campaign.
+
+**Response:**
+```json
+{
+  "campaign_id": "campaign_1234567890",
+  "name": "Q4 Outreach Campaign",
+  "status": "active",
+  "total_targets": 100,
+  "messages_sent": 45,
+  "messages_failed": 3,
+  "remaining_targets": 52,
+  "success_rate": 93.75,
+  "created_at": "2024-01-01T10:00:00Z",
+  "started_at": "2024-01-01T11:00:00Z",
+  "completed_at": null
+}
+```
+
+#### POST /api/v1/dm/campaigns/{campaign_id}/start
+Start a DM campaign (change status from draft to active).
+
+**Response:**
+```json
+{
+  "campaign_id": "campaign_1234567890",
+  "status": "started",
+  "targets": 100,
+  "template": "Introduction Template 1"
+}
+```
+
+#### POST /api/v1/dm/campaigns/{campaign_id}/run
+Execute a DM campaign (send messages).
+
+**Query Parameters:**
+- `max_messages` (optional): Maximum number of messages to send in this run
+
+**Response:**
+```json
+{
+  "campaign_id": "campaign_1234567890",
+  "messages_attempted": 10,
+  "messages_sent": 8,
+  "messages_failed": 2,
+  "errors": [
+    "user3: Profile not found",
+    "user7: Cannot DM private user we don't follow"
+  ],
+  "stopped_reason": "Rate limit: Hourly limit reached (10)"
+}
+```
+
+#### POST /api/v1/dm/send
+Send a single DM to a user.
+
+**Request Body:**
+```json
+{
+  "username": "target_user",
+  "message": "Hello! I found your profile interesting and would love to connect."
+}
+```
+
+**Response:**
+```json
+{
+  "username": "target_user",
+  "message": "Hello! I found your profile interesting and would love to connect.",
+  "campaign_id": null,
+  "timestamp": "2024-01-01T10:00:00Z",
+  "status": "sent",
+  "error": null
+}
+```
+
+#### POST /api/v1/dm/block/{username}
+Block a user from receiving DMs.
+
+**Response:**
+```json
+{
+  "message": "User target_user blocked successfully"
+}
+```
+
+#### POST /api/v1/dm/unblock/{username}
+Unblock a user.
+
+**Response:**
+```json
+{
+  "message": "User target_user unblocked successfully"
+}
+```
+
+#### GET /api/v1/dm/blocked-users
+Get list of blocked users.
+
+**Response:**
+```json
+{
+  "blocked_users": ["spam_user1", "spam_user2", "reported_user"]
+}
+```
+
 ## Error Handling
 
 ### HTTP Status Codes
